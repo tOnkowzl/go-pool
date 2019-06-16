@@ -1,4 +1,4 @@
-module github.com/tonkowzl/go-pool
+module github.com/tOnkowzl/go-pool
 
 go 1.12
 
