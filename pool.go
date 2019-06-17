@@ -4,17 +4,15 @@ import "sync"
 
 // Pool config
 type Pool struct {
-	concurrent int
-	guard      chan struct{}
-	wg         *sync.WaitGroup
+	guard chan struct{}
+	wg    *sync.WaitGroup
 }
 
 // New create pool
 func New(concurrent int) *Pool {
 	return &Pool{
-		concurrent: concurrent,
-		guard:      make(chan struct{}, concurrent),
-		wg:         &sync.WaitGroup{},
+		guard: make(chan struct{}, concurrent),
+		wg:    &sync.WaitGroup{},
 	}
 }
 
@@ -22,13 +20,15 @@ func New(concurrent int) *Pool {
 func (p *Pool) Go(fn func()) {
 	p.guard <- struct{}{}
 	p.wg.Add(1)
-	go func() {
-		defer p.wg.Done()
-		defer func() {
-			<-p.guard
-		}()
-		fn()
+	go p.execute(fn)
+}
+
+func (p *Pool) execute(fn func()) {
+	defer p.wg.Done()
+	defer func() {
+		<-p.guard
 	}()
+	fn()
 }
 
 // Wait wait execute routine
