@@ -2,7 +2,7 @@ package pool
 
 import "sync"
 
-type fn func(args []interface{})
+type fn func(args ...interface{})
 
 // Pool config
 type Pool struct {
@@ -22,15 +22,15 @@ func New(concurrent int) *Pool {
 func (p *Pool) Go(fn fn, args ...interface{}) {
 	p.guard <- struct{}{}
 	p.wg.Add(1)
-	go p.execute(fn, args)
+	go p.execute(fn, args...)
 }
 
-func (p *Pool) execute(fn fn, args []interface{}) {
+func (p *Pool) execute(fn fn, args ...interface{}) {
 	defer p.wg.Done()
 	defer func() {
 		<-p.guard
 	}()
-	fn(args)
+	fn(args...)
 }
 
 // Wait execute routine

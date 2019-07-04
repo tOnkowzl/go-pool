@@ -1,6 +1,3 @@
-# go-pool
-
-```golang
 package main
 
 import (
@@ -20,4 +17,3 @@ func main() {
 
 	p.Wait()
 }
-```
