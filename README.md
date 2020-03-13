@@ -1,5 +1,13 @@
 # go-pool
 
+## Benchmark
+
+```text
+Benchmark_Go-8   	 3287200	       373 ns/op	       0 B/op	       0 allocs/op
+```
+
+## Example
+
 ```golang
 package main
 
@@ -10,12 +18,14 @@ import (
 )
 
 func main() {
-	p := pool.New(10)
+p := pool.New(10)
 
 	for i := 1; i <= 1000; i++ {
-		p.Go(func(args ...interface{}) {
-			fmt.Println(args[0])
-		}, i)
+		arg := i
+		p.Go(func() error {
+			fmt.Println(arg)
+			return nil
+		})
 	}
 
 	p.Wait()
