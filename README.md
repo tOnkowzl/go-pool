@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-p := pool.New(10)
+	p := pool.New(10)
 
 	for i := 1; i <= 1000; i++ {
 		arg := i
