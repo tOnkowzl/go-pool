@@ -12,9 +12,8 @@ func TestGo(t *testing.T) {
 
 	for i := 1; i <= 1000; i++ {
 		arg := i
-		p.Go(func() error {
+		p.Go(func() {
 			fmt.Println(arg)
-			return nil
 		})
 	}
 
@@ -25,8 +24,7 @@ func Benchmark_Go(b *testing.B) {
 	p := pool.New(1)
 
 	for i := 1; i <= b.N; i++ {
-		p.Go(func() error {
-			return nil
+		p.Go(func() {
 		})
 	}
 

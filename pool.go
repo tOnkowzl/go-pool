@@ -1,39 +1,42 @@
 package pool
 
 import (
-	"golang.org/x/sync/errgroup"
+	"sync"
 )
 
-type fn func() error
+type fn func()
 
 // Pool config
 type Pool struct {
 	guard chan struct{}
-	eg    errgroup.Group
+	wg    sync.WaitGroup
 }
 
 // New create pool
 func New(concurrent int) *Pool {
 	return &Pool{
 		guard: make(chan struct{}, concurrent),
-		eg:    errgroup.Group{},
+		wg:    sync.WaitGroup{},
 	}
 }
 
 // Go execute func
 func (p *Pool) Go(fn fn) {
 	p.guard <- struct{}{}
-	p.eg.Go(p.execute(fn))
+	p.wg.Add(1)
+	p.execute(fn)
 }
 
-func (p *Pool) execute(fn fn) fn {
+func (p *Pool) execute(fn fn) {
+	defer p.wg.Done()
 	defer func() {
 		<-p.guard
 	}()
-	return fn
+
+	fn()
 }
 
 // Wait execute routine
-func (p *Pool) Wait() error {
-	return p.eg.Wait()
+func (p *Pool) Wait() {
+	p.wg.Wait()
 }

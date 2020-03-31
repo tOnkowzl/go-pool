@@ -3,7 +3,7 @@
 ## Benchmark
 
 ```text
-Benchmark_Go-8   	 3287200	       373 ns/op	       0 B/op	       0 allocs/op
+Benchmark_Go-8   	16753122	        74.2 ns/op	       0 B/op	       0 allocs/op
 ```
 
 ## Example
@@ -22,9 +22,8 @@ func main() {
 
 	for i := 1; i <= 1000; i++ {
 		arg := i
-		p.Go(func() error {
+		p.Go(func(){
 			fmt.Println(arg)
-			return nil
 		})
 	}
 
