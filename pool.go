@@ -24,16 +24,13 @@ func New(concurrent int) *Pool {
 func (p *Pool) Go(fn fn) {
 	p.guard <- struct{}{}
 	p.wg.Add(1)
-	p.execute(fn)
+	go p.execute(fn)
 }
 
 func (p *Pool) execute(fn fn) {
-	defer p.wg.Done()
-	defer func() {
-		<-p.guard
-	}()
-
 	fn()
+	p.wg.Done()
+	<-p.guard
 }
 
 // Wait execute routine
